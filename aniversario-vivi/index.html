@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viviane</title>
+    <title>Para Viviane ❤️</title>
     
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/128/6006/6006320.png" type="image/png">
     
+    <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Canvas Confetti (Para a explosão inicial) -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -22,7 +27,8 @@
                             pink: '#ffe4e6',
                             purple: '#f3e8ff',
                             rose: '#fda4af',
-                            text: '#4c1d95'
+                            text: '#4c1d95',
+                            gold: '#fbbf24'
                         }
                     },
                     fontFamily: {
@@ -31,17 +37,31 @@
                     },
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
                         'pulse-glow': 'pulse-glow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'spin-slow': 'spin 4s linear infinite',
+                        'spin-slow': 'spin 5s linear infinite',
+                        'heartbeat': 'heartbeat 1.5s ease-in-out infinite',
+                        'slide-up': 'slideUp 1s ease-out forwards'
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' },
+                            '50%': { transform: 'translateY(-15px)' },
                         },
                         'pulse-glow': {
-                            '0%, 100%': { boxShadow: '0 0 15px 5px rgba(253, 164, 175, 0.4)' },
-                            '50%': { boxShadow: '0 0 25px 10px rgba(253, 164, 175, 0.8)' },
+                            '0%, 100%': { boxShadow: '0 0 15px 5px rgba(253, 164, 175, 0.4), inset 0 0 10px rgba(253,164,175,0.2)' },
+                            '50%': { boxShadow: '0 0 30px 15px rgba(253, 164, 175, 0.6), inset 0 0 20px rgba(253,164,175,0.4)' },
+                        },
+                        heartbeat: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '14%': { transform: 'scale(1.1)' },
+                            '28%': { transform: 'scale(1)' },
+                            '42%': { transform: 'scale(1.1)' },
+                            '70%': { transform: 'scale(1)' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(50px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
                         }
                     }
                 }
@@ -51,35 +71,84 @@
 
     <style>
         body {
-            background: linear-gradient(135deg, #fff0f2 0%, #f3e8ff 100%);
+            background: linear-gradient(135deg, #fff0f2 0%, #f3e8ff 50%, #fff0f2 100%);
+            background-size: 200% 200%;
+            animation: gradientMove 15s ease infinite;
             color: #4c1d95;
             margin: 0;
             overflow-x: hidden;
         }
 
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Tela de Introdução */
+        #intro-screen {
+            backdrop-filter: blur(10px);
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        /* Efeito de Carta Realista com Tilt 3D */
         .paper-letter {
             background-color: #fffafb;
             background-image: linear-gradient(transparent 95%, #fce7f3 5%);
-            background-size: 100% 2em;
+            background-size: 100% 2.2em;
             box-shadow: 
-                0 4px 6px -1px rgba(0, 0, 0, 0.05),
-                0 10px 15px -3px rgba(0, 0, 0, 0.05),
-                inset 0 0 20px rgba(253, 164, 175, 0.1);
+                0 10px 25px -5px rgba(253, 164, 175, 0.3),
+                0 8px 10px -6px rgba(0, 0, 0, 0.1),
+                inset 0 0 30px rgba(253, 164, 175, 0.05);
             position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
+        /* Selo de Coração da Carta */
         .paper-letter::before {
             content: '♥';
             position: absolute;
-            top: -15px;
+            top: -18px;
             left: 50%;
             transform: translateX(-50%);
-            background: #fda4af;
+            background: linear-gradient(135deg, #fb7185, #fda4af);
             color: white;
-            padding: 5px 12px;
+            padding: 6px 16px;
             border-radius: 20px;
-            font-size: 14px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 16px;
+            box-shadow: 0 4px 10px rgba(251, 113, 133, 0.4);
+            border: 2px solid #fff;
+            z-index: 10;
+        }
+
+        /* Fita Adesiva Decorativa */
+        .tape {
+            position: absolute;
+            width: 80px;
+            height: 25px;
+            background-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            backdrop-filter: blur(2px);
+            top: -10px;
+            right: -20px;
+            transform: rotate(15deg);
+            z-index: 5;
+        }
+
+        .tape:nth-child(2) {
+            top: auto;
+            bottom: -10px;
+            left: -20px;
+            right: auto;
+            transform: rotate(-15deg);
+        }
+
+        /* Glassmorphism para elementos flutuantes */
+        .glass {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
 
         ::-webkit-scrollbar {
@@ -93,92 +162,128 @@
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #f9a8d4;
+            background: #f472b6;
+        }
+
+        /* Oculta conteúdo principal inicialmente */
+        #main-content {
+            display: none;
+            opacity: 0;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center py-12 px-4 relative font-sans selection:bg-pink-300 selection:text-white pb-24">
+<body class="min-h-screen flex flex-col items-center justify-center font-sans selection:bg-pink-300 selection:text-white relative">
     
+    <!-- Canvas dos Corações -->
     <canvas id="magicCanvas" class="fixed inset-0 pointer-events-none z-0 w-full h-full"></canvas>
 
-    <!-- Áudio Oculto -->
+    <!-- Áudio (Mantive o arquivo local, garanta que ele está na mesma pasta) -->
     <audio id="bgMusic" loop>
         <source src="young.mp3" type="audio/mpeg">
     </audio>
 
+    <!-- TELA DE ABERTURA (Surpresa) -->
+    <div id="intro-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-pink-50/90 w-full h-full">
+        <div class="text-center animate-slide-up">
+            <h1 class="text-4xl md:text-5xl font-handwriting text-pink-600 mb-6 font-bold drop-shadow-sm">Você tem uma surpresa...</h1>
+            <button id="openBtn" class="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 bg-pink-500 rounded-full hover:bg-pink-600 hover:shadow-xl hover:shadow-pink-300/50 hover:-translate-y-1 focus:outline-none overflow-hidden">
+                <span class="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-black"></span>
+                <span class="relative flex items-center gap-2 text-xl font-handwriting tracking-wider">
+                    Abrir Envelope <span class="text-2xl animate-heartbeat inline-block">💌</span>
+                </span>
+            </button>
+        </div>
+    </div>
+
     <!-- Botão de Música Flutuante -->
-    <button id="musicBtn" class="fixed bottom-6 left-6 z-50 bg-white/90 backdrop-blur-sm p-4 rounded-full shadow-lg border border-pink-200 text-pink-500 hover:bg-pink-50 transition transform hover:scale-110 flex items-center gap-2 font-semibold">
-        <span id="musicIcon" class="text-xl">🎵</span>
-        <span id="musicText" class="text-sm">Ouvir Música</span>
+    <button id="musicBtn" class="fixed bottom-6 left-6 z-40 glass px-5 py-3 rounded-full shadow-lg text-pink-600 hover:bg-white transition-all transform hover:scale-105 flex items-center gap-3 font-medium opacity-0 translate-y-10">
+        <span id="musicIcon" class="text-xl animate-spin-slow">🎶</span>
+        <span id="musicText" class="text-sm">Pausar</span>
     </button>
 
-    <main class="relative z-10 flex flex-col items-center w-full max-w-3xl">
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main id="main-content" class="relative z-10 flex flex-col items-center w-full max-w-4xl py-12 px-4 pb-24">
         
-        <header class="text-center mb-10 animate-float">
-            <div class="inline-block px-4 py-1 rounded-full bg-white/50 backdrop-blur-sm text-pastel-rose font-semibold tracking-widest text-sm uppercase mb-3 shadow-sm border border-pink-100">
-                8 de Outubro
+        <header class="text-center mb-12 animate-float">
+            <div class="inline-block px-6 py-1.5 rounded-full glass text-pink-600 font-bold tracking-[0.2em] text-xs uppercase mb-4 shadow-sm">
+                ✨ 8 de Outubro ✨
             </div>
-            <h1 class="text-5xl md:text-6xl font-handwriting text-pastel-text font-bold drop-shadow-sm mb-2">
+            <h1 class="text-5xl md:text-7xl font-handwriting text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600 font-bold drop-shadow-sm mb-3">
                 Feliz Aniversário, Viviane!
             </h1>
-            <p class="text-gray-500 text-lg">Um dia especial feito todinho para você.</p>
+            <p class="text-pink-400/80 font-medium text-lg tracking-wide uppercase">Um dia criado todinho para você</p>
         </header>
 
-        <div class="relative mb-12 group">
-            <div class="absolute -inset-2 bg-gradient-to-tr from-pink-300 via-purple-200 to-rose-300 rounded-full blur-md opacity-70 group-hover:opacity-100 transition duration-500 animate-pulse-glow"></div>
+        <!-- Container da Foto -->
+        <div class="relative mb-16 group animate-float-delayed">
+            <!-- Anéis de brilho -->
+            <div class="absolute -inset-3 bg-gradient-to-tr from-pink-400 via-purple-300 to-rose-400 rounded-full blur-lg opacity-60 group-hover:opacity-100 group-hover:scale-105 transition duration-700 animate-pulse-glow"></div>
+            <div class="absolute -inset-1 bg-white rounded-full opacity-80 blur-sm"></div>
             
-            <div class="relative bg-white p-2 rounded-full shadow-xl">
+            <div class="relative bg-white p-2.5 rounded-full shadow-2xl transform transition duration-500 group-hover:rotate-3">
+                <!-- Imagem (Mantido seu link. Nota: Links do Instagram expiram, então a imagem de fallback está configurada) -->
                 <img 
                     src="https://scontent-for2-2.cdninstagram.com/v/t51.82787-19/787651911_17904355593477139_3024848217223078110_n.jpg?_nc_cat=108&ccb=7-5&_nc_sid=bf7eb4&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=Da218OqtwvkQ7kNvwEeKWMr&_nc_oc=Adq3a1BMWJyouaoeQbyADZd8yfi535MceKjBhpyq8EZJnkLHO5t5wOJ5BlGdDjIal8d7BGA2iTMjUdMI7waPiLCE&_nc_zt=24&_nc_ht=scontent-for2-2.cdninstagram.com&_nc_gid=G6mPZB31ttySVSvu7SYMig&_nc_ss=7b6a8&oh=00_AQNFzf2Qd9Ro7PZibydMI1d6Mn8LsRWWoI61ZX3LMSLM7A&oe=6AC84FF7" 
                     alt="Foto da Viviane" 
-                    class="w-48 h-48 md:w-56 md:h-56 object-cover rounded-full transition transform hover:scale-105 duration-500"
-                    onerror="this.src='https://placehold.co/400x400/ffe4e6/fda4af?text=Viviane'"
+                    class="w-52 h-52 md:w-64 md:h-64 object-cover rounded-full transition transform duration-500"
+                    onerror="this.src='https://placehold.co/500x500/fce7f3/db2777?text=Viviane+Linda&font=Playfair+Display'"
                 >
             </div>
             
-            <div class="absolute -bottom-4 -right-4 w-16 h-16 text-pink-400 drop-shadow-md transform rotate-12">
+            <!-- Estrela decorativa -->
+            <div class="absolute -bottom-2 -right-2 w-14 h-14 text-yellow-400 drop-shadow-lg transform rotate-12 animate-bounce">
                 <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12,2C8,2,4,5,4,9c0,5.5,8,13,8,13s8-7.5,8-13C20,5,16,2,12,2z"/>
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                 </svg>
             </div>
         </div>
 
-        <article class="paper-letter w-full max-w-2xl p-8 md:p-12 rounded-xl text-center md:text-left transform -rotate-1 hover:rotate-0 transition duration-300">
-            <h2 class="text-3xl font-handwriting text-pink-500 mb-6 font-bold">
+        <!-- CARTA (Agora com efeito Tilt 3D em JS) -->
+        <article id="letter" class="paper-letter w-full max-w-2xl p-8 md:p-14 rounded-xl text-center md:text-left transform -rotate-1 transition duration-200">
+            <div class="tape"></div>
+            <div class="tape"></div>
+
+            <h2 class="text-4xl font-handwriting text-pink-600 mb-8 font-bold">
                 Querida Viviane,
             </h2>
             
-            <div class="space-y-4 font-handwriting text-2xl md:text-3xl text-gray-700 leading-relaxed" style="line-height: 1.8;">
+            <div class="space-y-6 font-handwriting text-2xl md:text-3xl text-gray-700 leading-relaxed" style="line-height: 1.85;">
                 <p>
                     Hoje é o seu dia especial! Um momento para celebrar a pessoa incrível, forte e linda que você é. Sei que não nos conhecemos direito, e sei que sumi por 1 ano, mas estou aqui agora, mesmo que distante.
                 </p>
                 <p>
-                    Que a vida lhe reserve momentos tão emocionantes e cheios de aventura quanto os episódios de <span class="text-purple-600 font-bold">Supernatural</span> que você tanto gosta. 
+                    Que a vida lhe reserve momentos tão emocionantes e cheios de aventura quanto os episódios de <span class="text-purple-600 font-bold bg-purple-100 px-2 py-0.5 rounded-md transform inline-block hover:scale-110 transition cursor-default shadow-sm">Supernatural</span> que você tanto gosta. 
                 </p>
                 <p>
                     O dia de hoje está reservado apenas para surpresas doces, muita paz, sorrisos sinceros e todo o amor que você merece. Que seu novo ano de vida seja mágico e repleto de luz.
                 </p>
             </div>
 
-            <div class="mt-8 p-5 bg-pink-50/80 rounded-lg border border-pink-100 text-center shadow-inner">
-                <p class="font-sans text-sm md:text-base text-pink-700 italic">
+            <div class="mt-10 p-6 glass rounded-xl border border-pink-200 text-center shadow-sm relative overflow-hidden group">
+                <div class="absolute inset-0 bg-gradient-to-r from-pink-100/50 to-purple-100/50 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></div>
+                <p class="relative z-10 font-sans text-sm md:text-base text-pink-800 italic font-medium">
                     "O Senhor te abençoe e te guarde; o Senhor faça resplandecer o seu rosto sobre ti e te dê a paz."
                 </p>
-                <p class="font-sans text-xs text-pink-500 mt-2 font-bold tracking-wide uppercase">
+                <p class="relative z-10 font-sans text-xs text-pink-500 mt-3 font-bold tracking-widest uppercase">
                     - Números 6:24-26
                 </p>
             </div>
 
-            <div class="mt-8 pt-4 border-t border-pink-100 flex flex-col items-end">
-                <p class="font-handwriting text-2xl text-pink-400">Com todo o carinho, Vitor</p>
-                <p class="font-handwriting text-4xl text-purple-600 font-bold mt-2">Feliz Aniversário!</p>
+            <div class="mt-12 pt-6 border-t-2 border-dashed border-pink-200 flex flex-col items-end">
+                <p class="font-handwriting text-3xl text-pink-500">Com todo o carinho,</p>
+                <p class="font-handwriting text-5xl text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500 font-bold mt-2 transform hover:rotate-2 transition cursor-default">
+                    Vitor
+                </p>
             </div>
         </article>
         
     </main>
 
     <script>
-        // Lógica de Tocar Música
+        // LÓGICA DE ABERTURA E MÚSICA
+        const introScreen = document.getElementById('intro-screen');
+        const openBtn = document.getElementById('openBtn');
+        const mainContent = document.getElementById('main-content');
         const bgMusic = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('musicBtn');
         const musicIcon = document.getElementById('musicIcon');
@@ -186,27 +291,101 @@
         
         let isPlaying = false;
 
+        // Quando clica em Abrir
+        openBtn.addEventListener('click', () => {
+            // Dispara Confetes
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+
+            // Toca a música
+            bgMusic.play().then(() => {
+                isPlaying = true;
+            }).catch(e => console.log("Áudio bloqueado:", e));
+
+            // Transição de tela
+            introScreen.style.opacity = '0';
+            setTimeout(() => {
+                introScreen.style.visibility = 'hidden';
+                mainContent.style.display = 'flex';
+                // Animação de fade in do conteúdo principal
+                setTimeout(() => {
+                    mainContent.style.opacity = '1';
+                    mainContent.classList.add('animate-slide-up');
+                    
+                    // Mostra o botão de música flutuante
+                    musicBtn.style.opacity = '1';
+                    musicBtn.style.transform = 'translateY(0)';
+                }, 100);
+            }, 800);
+        });
+
+        // Botão de Play/Pause Flutuante
         musicBtn.addEventListener('click', () => {
             if (isPlaying) {
                 bgMusic.pause();
                 musicIcon.textContent = '🎵';
-                musicText.textContent = 'Ouvir Música';
+                musicText.textContent = 'Ouvir';
                 musicIcon.classList.remove('animate-spin-slow');
             } else {
                 bgMusic.play();
                 musicIcon.textContent = '🎶';
-                musicText.textContent = 'Pausar Música';
+                musicText.textContent = 'Pausar';
                 musicIcon.classList.add('animate-spin-slow');
             }
             isPlaying = !isPlaying;
         });
 
-        // Lógica dos Corações (Mantida)
+        // LÓGICA DO TILT 3D NA CARTA
+        const letter = document.getElementById('letter');
+        letter.addEventListener('mousemove', (e) => {
+            const rect = letter.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -3; // Max 3 graus
+            const rotateY = ((x - centerX) / centerX) * 3;
+            
+            letter.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+
+        letter.addEventListener('mouseleave', () => {
+            letter.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) rotate(-1deg)`;
+        });
+
+        // LÓGICA DOS CORAÇÕES MELHORADA (Reage ao mouse)
         const canvas = document.getElementById('magicCanvas');
         const ctx = canvas.getContext('2d');
         
         let width, height;
         let hearts = [];
+        let mouse = { x: null, y: null };
+
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+        window.addEventListener('mouseout', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
 
         function resizeCanvas() {
             width = canvas.width = window.innerWidth;
@@ -225,12 +404,12 @@
             reset() {
                 this.x = Math.random() * width;
                 this.y = height + 50;
-                this.size = Math.random() * 15 + 5;
+                this.size = Math.random() * 15 + 8; // Corações levemente maiores
                 this.speedY = -(Math.random() * 1.5 + 0.5);
                 this.speedX = (Math.random() - 0.5) * 1;
-                this.opacity = Math.random() * 0.5 + 0.1;
+                this.opacity = Math.random() * 0.4 + 0.1;
                 
-                const colors = ['#fbcfe8', '#fce7f3', '#e9d5ff', '#fda4af', '#fff'];
+                const colors = ['#fbcfe8', '#fce7f3', '#e9d5ff', '#fda4af', '#f472b6'];
                 this.color = colors[Math.floor(Math.random() * colors.length)];
                 
                 this.sway = Math.random() * Math.PI * 2;
@@ -238,7 +417,21 @@
 
             update() {
                 this.y += this.speedY;
-                this.x += Math.sin(this.sway) * 0.5;
+                
+                // Movimento base
+                let currentSpeedX = this.speedX + Math.sin(this.sway) * 0.5;
+                
+                // Interação com o mouse (os corações fogem levemente do mouse)
+                if (mouse.x != null && mouse.y != null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 100) {
+                        currentSpeedX -= dx * 0.01;
+                    }
+                }
+
+                this.x += currentSpeedX;
                 this.sway += 0.02;
 
                 if (this.y < -50) {
@@ -250,6 +443,8 @@
                 ctx.save();
                 ctx.globalAlpha = this.opacity;
                 ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 5;
                 ctx.beginPath();
                 
                 let topCurveHeight = this.size * 0.3;
@@ -281,7 +476,7 @@
         }
 
         function initHearts() {
-            const heartCount = window.innerWidth < 768 ? 30 : 60;
+            const heartCount = window.innerWidth < 768 ? 25 : 50;
             for (let i = 0; i < heartCount; i++) {
                 hearts.push(new Heart());
             }
